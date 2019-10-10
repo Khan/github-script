@@ -3,7 +3,7 @@
 This action makes it easy to quickly write a script in your workflow that
 uses the GitHub API and the workflow run context.
 
-In order to use this action, a `script` input is provided. The value of that
+In order to use this action, a `script` input is provided. (you can also specify a path as `script-path`, and it will be required, and the default export will be called with (github, context, core) as arguments). The value of that
 input should be the body of an asynchronous function call. Two arguments will
 be provided:
 
@@ -11,6 +11,7 @@ be provided:
   [octokit/rest.js](https://github.com/octokit/rest.js) client
 - `context` An object containing the [context of the workflow
   run](https://github.com/actions/toolkit/tree/master/packages/github)
+- `core` is `@actions/core`
 
 Since the `script` is just a function body, these values will already be
 defined, so you don't have to (see examples below).
