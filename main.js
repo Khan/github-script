@@ -15,9 +15,13 @@ async function main() {
   if (userAgent != null) opts.userAgent = userAgent
   if (previews != null) opts.previews = previews.split(',')
   const client = new GitHub(token, opts)
-  const script = core.getInput('script', {required: true})
-  const fn = new AsyncFunction('github', 'context', script)
-  const result = await fn(client, context)
+  let script = core.getInput('script')
+  const script_path = core.getInput('script-path')
+  if (script_path) {
+    script = require('fs').readFileSync(script_path);
+  }
+  const fn = new AsyncFunction('github', 'context', 'core', script)
+  const result = await fn(client, context, core)
   core.setOutput('result', JSON.stringify(result))
 }
 
