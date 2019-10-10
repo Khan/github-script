@@ -4,6 +4,15 @@ const {GitHub, context} = require('@actions/github')
 process.on('unhandledRejection', handleError)
 main().catch(handleError)
 
+const getScriptFunction = () => {
+  const script_path = core.getInput('script-path')
+  if (script_path) {
+    return require(script_path)
+  }
+  const script = core.getInput('script', {required: true});
+  return new AsyncFunction('github', 'context', 'core', script)
+}
+
 async function main() {
   const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor
   const token = core.getInput('github-token', {required: true})
@@ -15,12 +24,7 @@ async function main() {
   if (userAgent != null) opts.userAgent = userAgent
   if (previews != null) opts.previews = previews.split(',')
   const client = new GitHub(token, opts)
-  let script = core.getInput('script')
-  const script_path = core.getInput('script-path')
-  if (script_path) {
-    script = require('fs').readFileSync(script_path);
-  }
-  const fn = new AsyncFunction('github', 'context', 'core', script)
+  const fn = getScriptFunction();
   const result = await fn(client, context, core)
   core.setOutput('result', JSON.stringify(result))
 }
