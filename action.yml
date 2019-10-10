@@ -6,7 +6,10 @@ branding:
 inputs:
   script:
     description: The script to run
-    required: true
+    required: false
+  script-path:
+    description: A path of a script to run (overrides the script option)
+    required: false
   github-token:
     description: The GitHub token used to create an authenticated client
     required: true
